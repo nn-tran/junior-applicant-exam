@@ -76,6 +76,6 @@
     end
 
     # passing validation
-    puts "Challenge 4-1: is 'RADAR' a palindrome? Output: #{is_palindrome?('RADAR') || "nil"} | Correct answer: true"
-    puts "Challenge 4-2: is '2121' a palindrome? Output: #{is_palindrome?('2121') || "nil"} | Correct answer: false"
-    puts "Challenge 4-3: is 'x' a palindrome? Output: #{is_palindrome?('x') || "nil"} | Correct answer: true"
+    puts "Challenge 4-1: is 'RADAR' a palindrome? Output: #{is_palindrome?('RADAR').to_s || "nil"} | Correct answer: true"
+    puts "Challenge 4-2: is '2121' a palindrome? Output: #{is_palindrome?('2121').to_s || "nil"} | Correct answer: false"
+    puts "Challenge 4-3: is 'x' a palindrome? Output: #{is_palindrome?('x').to_s || "nil"} | Correct answer: true"
