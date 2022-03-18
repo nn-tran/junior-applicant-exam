@@ -13,10 +13,12 @@
 
     expected_answer = "grant me the s3r3nity to accept the things i cannot change the c0urage to change the things i can and the w1sd0m to know the difference"
 
+    #remove non-alphanumerics and trim spaces
+    #notably apostrophes turn into spaces ("it's"->"it s")
     def sanitize_paragraph(paragraph)
-      # your code
+      return paragraph.downcase.scan(/[0-9a-z]+/).join(" ")
     end
-    
+
     puts "Challenge 1 completed: #{sanitize_paragraph(paragraph) == expected_answer}"
 
 #####################################################################################
@@ -36,8 +38,14 @@
       "SARAWAK", "TERENGGANU", "JOHOR", "TERENGGANU", "SELANGOR", "SELANGOR"
     ]
 
+    #find the state information from the address string using a word search
     def get_state(address)
-      # your code
+      states = ["JOHOR","KEDAH","KELANTAN","MALACCA","NEGERI","SEMBILAN","PAHANG","PERAK","PERLIS","SABAH","SARAWAK","SELANGOR","TERENGGANU"]
+      states.each { |s|
+        if address.upcase.scan(/\w+/).include?(s)
+          return s
+        end
+      }
     end
 
     # passing validation
@@ -54,8 +62,25 @@
     coordinate_pair = [[[[30,20], [45,40], [10,40], [30,20]]], [[[15,5], [40,10], [10,20], [5,10], [15,5]]]]
     expected_answer = "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))"
 
+    def recursive_coordinate_walk(coordinate_pair)
+      output = ""
+      coordinate_pair.each_with_index do |node, index|
+        if node.is_a?(Array)
+          to_concat = recursive_coordinate_walk(node)
+          output.concat(node[0].is_a?(Array)? "(#{to_concat})": to_concat )
+        else 
+          output.concat(coordinate_pair.join(" "))
+          break
+        end
+        if index != coordinate_pair.size-1
+            output.concat(", ")
+        end
+      end
+      return output
+    end
+      
     def coord_to_wkt(coordinate_pair)
-      # your code
+      return "MULTIPOLYGON (#{recursive_coordinate_walk(coordinate_pair)})"
     end
 
     # passing validation
@@ -72,7 +97,7 @@
     Bonus points for the elegant recursive solution!'
 
     def is_palindrome?(word)
-      
+      return word.empty? || (word[-1] == word[0] && (word[1,-2] == nil || is_palindrome?(word[1,-2])))
     end
 
     # passing validation
