@@ -62,23 +62,26 @@
     coordinate_pair = [[[[30,20], [45,40], [10,40], [30,20]]], [[[15,5], [40,10], [10,20], [5,10], [15,5]]]]
     expected_answer = "MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))"
 
+    #constructs a WKT string using recursion
     def recursive_coordinate_walk(coordinate_pair)
       output = ""
       coordinate_pair.each_with_index do |node, index|
-        if node.is_a?(Array)
-          to_concat = recursive_coordinate_walk(node)
-          output.concat(node[0].is_a?(Array)? "(#{to_concat})": to_concat )
-        else 
-          output.concat(coordinate_pair.join(" "))
+        if node[0].is_a?(Array) #outer arrays get parentheses
+          output.concat("(",recursive_coordinate_walk(node),")")
+        elsif node.is_a?(Array) #innermost arrays containing only numbers are adjusted accordingly
+          output.concat(coordinate_pair.map{|pair| pair.join(" ")}.join(", "))
           break
         end
-        if index != coordinate_pair.size-1
+        if index != coordinate_pair.size-1 #separation
             output.concat(", ")
         end
       end
       return output
     end
-      
+    
+    #adding the finishing touches
+    #text has to be added manually because the information cannot be obtained from just the coordinates
+    #for example, LINESTRING and MULTIPOINT can be indistinguishable without text
     def coord_to_wkt(coordinate_pair)
       return "MULTIPOLYGON (#{recursive_coordinate_walk(coordinate_pair)})"
     end
